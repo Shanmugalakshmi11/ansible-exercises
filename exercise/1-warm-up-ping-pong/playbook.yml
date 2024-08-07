@@ -1,0 +1,49 @@
+---
+- name: Setup and configure web server
+  hosts: webserver
+  become: yes
+  tasks:
+    - name: Update and upgrade apt packages
+      apt:
+        update_cache: yes
+        upgrade: dist
+        cache_valid_time: 3600
+
+    - name: Install Apache
+      apt:
+        name: apache2
+        state: present
+
+    - name: Start and enable Apache
+      service:
+        name: apache2
+        state: started
+        enabled: yes
+
+    - name: Ensure UFW is installed
+      apt:
+        name: ufw
+        state: present
+
+    - name: Allow OpenSSH through UFW
+      ufw:
+        rule: allow
+        name: OpenSSH
+
+    - name: Allow Apache through UFW
+      ufw:
+        rule: allow
+        name: "Apache Full"
+
+    - name: Enable UFW
+      ufw:
+        state: enabled
+        enabled: yes
+
+    - name: Create a test index.html
+      copy:
+        content: "<html><h1>Hello World from Ansible</h1></html>"
+        dest: /var/www/html/index.html
+        owner: www-data
+        group: www-data
+        mode: "0644"
