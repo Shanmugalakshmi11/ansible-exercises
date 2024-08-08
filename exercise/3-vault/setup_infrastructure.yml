@@ -1,0 +1,31 @@
+---
+- name: Provision VPC and EC2 Instance
+  hosts: localhost
+  connection: local
+  gather_facts: no
+
+  tasks:
+    - name: Create a VPC
+      ec2_vpc_net:
+        name: myactive-vpc
+        cidr_block: 10.0.0.0/16
+        region: eu-central-1
+        state: present
+      register: vpc
+
+    - name: Create an EC2 instance
+      ec2_instance:
+        key_name: lakshmi-ec2-sandbox
+        instance_type: t2.micro
+        image: ami-0e872aee57663ae2d # Example AMI ID for Ubuntu 20.04 in Frankfurt
+        region: eu-central-1
+        vpc_subnet_id: "{{ vpc.subnets[0].id }}"
+        wait: yes
+        assign_public_ip: yes
+        count: 1
+        state: present
+      register: ec2
+
+    - name: Output EC2 instance IP
+      debug:
+        msg: "EC2 instance public IP is {{ ec2.instances[0].public_ip }}"
