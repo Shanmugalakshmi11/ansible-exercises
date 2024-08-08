@@ -1,0 +1,28 @@
+---
+- name: Message from Group 1
+  hosts: group1
+  tasks:
+    - name: Display message
+      debug:
+        msg: "Hello from: group1"
+
+- name: Message from Group 2
+  hosts: group2
+  tasks:
+    - name: Display message
+      debug:
+        msg: "Hello from: group2"
+
+- name: Message from Group 3
+  hosts: group3
+  tasks:
+    - name: Display message
+      debug:
+        msg: "Hello from: group3"
+
+- name: Report IP address from all servers
+  hosts: servers
+  tasks:
+    - name: Display IP address
+      debug:
+        msg: "Host {{ inventory_hostname }} has IP {{ ansible_host }}"
