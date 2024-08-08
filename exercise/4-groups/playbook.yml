@@ -1,19 +1,30 @@
 ---
-- name: Groups
-  hosts: ???????????????????????????
+- name: Install Git on All Servers
+  hosts: servers
   become: yes
+
   tasks:
-    - name: Ensure Nginx is installed
-      apt:
-        name: nginx
-        state: present
     - name: Ensure Git is installed
-      apt:
+      ansible.builtin.package:
         name: git
         state: present
-    - name: Check Git version
-      shell: git -v
-      register: git_version_output
-    - name: Display Git Version
-      debug:
-        var: git_version_output.stdout
+
+- name: Install Git on Group 1
+  hosts: group1
+  become: yes
+
+  tasks:
+    - name: Ensure Git is installed
+      ansible.builtin.package:
+        name: git
+        state: present
+
+- name: Install Git on Group 2
+  hosts: group2
+  become: yes
+
+  tasks:
+    - name: Ensure Git is installed
+      ansible.builtin.package:
+        name: git
+        state: present
